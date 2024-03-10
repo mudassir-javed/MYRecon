@@ -1,0 +1,13 @@
+1 : https://developers.google.com/youtube  
+2 : https://www.youtube.com/t/contact_us/  
+3 : https://www.youtube.com/new  
+4 : https://www.youtube.com/t/privacy  
+5 : https://www.youtube.com/creators/  
+6 : https://www.youtube.com/about/copyright/  
+7 : https://www.youtube.com/ads/  
+8 : https://www.youtube.com/about/policies/  
+9 : https://www.youtube.com/about/press/  
+10 : https://www.youtube.com/about/  
+11 : https://www.youtube.com/  
+12 : https://www.youtube.com/t/terms  
+13 : https://www.youtube.com/howyoutubeworks?utm_campaign=ytgen&utm_source=ythp&utm_medium=LeftNav&utm_content=txt&u=https%3A%2F%2Fwww.youtube.com%2Fhowyoutubeworks%3Futm_source%3Dythp%26utm_medium%3DLeftNav%26utm_campaign%3Dytgen  

@@ -17,7 +17,7 @@ def get_domain(url):
             return True, parsed_url.netloc
         elif parsed_url.path:
             return True, parsed_url.path
-    except:
+    except :
         return False, None
 
 
