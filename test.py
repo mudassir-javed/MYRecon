@@ -1,8 +1,9 @@
-import validators
 import requests
-import click
 from bs4 import BeautifulSoup
+import click
+import socket
 from urllib.parse import urlparse, urljoin
+import validators
 
 
 def is_ip(inp):
@@ -20,20 +21,30 @@ def get_domain(url):
         return False, None
 
 
+def get_hostname(ip):
+    try:
+        host_name = socket.gethostbyaddr(ip)
+        return True, host_name[0]
+    except:
+        return False, None
+
+
 def is_live(domain):
     try:
         code = requests.get("https://" + domain, timeout=7)
-        return code.status_code == 200
+        if code.status_code == 200:
+            print(f"STATUS : Running")
     except requests.exceptions.ConnectionError:
-        return False
+        print(f"STATUS : Not Running")
 
 
 @click.command()
 @click.option('-d', '--depth', default=1, help='Maximum depth for crawling.')
 @click.argument('url')
-def crawl_domain(url, depth):
+def crawl_domain(depth, url):
     visited_urls = set()
     pages_to_visit = [(url, 0)]
+    all_links = set()  # Use a set to store unique links
 
     while pages_to_visit:
         current_url, current_depth = pages_to_visit.pop(0)
@@ -48,6 +59,21 @@ def crawl_domain(url, depth):
             response = requests.get(current_url)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.content, 'html.parser')
+
+                # Extract all hyperlinks from the page
+                links = soup.find_all('a', href=True)
+                for link in links:
+                    absolute_link = urljoin(current_url, link['href'])
+                    all_links.add(absolute_link)  # Add link to the set
+
+                # Extract links from text-based HTML tags
+                text_tags = soup.find_all(['p', 'div', 'span'])
+                for tag in text_tags:
+                    links = tag.find_all('a', href=True)
+                    for link in links:
+                        absolute_link = urljoin(current_url, link['href'])
+                        all_links.add(absolute_link)  # Add link to the set
+
                 for link in soup.find_all('a', href=True):
                     absolute_link = urljoin(current_url, link['href'])
                     if absolute_link.startswith(url) and current_depth < depth:
@@ -55,22 +81,11 @@ def crawl_domain(url, depth):
         except Exception as e:
             print("Error:", e)
 
-
-def validation(url):
-    ip = url
-    if is_ip(url):
-        print(f"IP ADDRESS : {url}")
-        ip = url
-    else:
-        is_domain, domain = get_domain(url)
-        if is_domain:
-            print(f"DOMAIN : {domain}")
-            if is_live(domain):
-                print(f"STATUS : Running")
-            else:
-                print(f"STATUS : Not Running")
+    # Writing the links to a file
+    with open('Links.txt', 'w', encoding='utf-8') as f:
+        for i, link in enumerate(all_links, 1):
+            f.write(f"{i} : {link}  \n")
 
 
 if __name__ == "__main__":
     crawl_domain()
-    validation()
