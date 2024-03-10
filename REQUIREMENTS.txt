@@ -1,0 +1,5 @@
+validators~=0.22.0
+requests~=2.31.0
+click~=8.1.7
+whois~=1.20240129.2
+beautifulsoup4~=4.12.3
